@@ -1,11 +1,21 @@
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, Navigate, useNavigate } from "react-router-dom";
 import { Home } from "./Pages/Home";
 import { Private } from "./Pages/Private";
 import './App.css';
-import { AuthProvider } from "./Contexts/Auth/AuthProvider";
 import { RequireAuth } from "./Contexts/Auth/RequireAuth";
+import { useContext } from "react";
+import { AuthContext } from "./Contexts/Auth/AuthContext";
 
 export function App() {
+
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await auth.signout();
+    navigate('/');
+    window.location.href = window.location.href;
+  }
 
   return (
    <div>
@@ -16,6 +26,7 @@ export function App() {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/private">Página privada</Link>
+        {auth.user && <button type="submit" onClick={handleLogout}>Sair</button>}
       </nav>
     </header>
     <hr/>
